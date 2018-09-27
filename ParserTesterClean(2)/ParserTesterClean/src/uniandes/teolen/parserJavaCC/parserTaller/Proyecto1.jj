@@ -1,0 +1,157 @@
+/**
+ * JavaCC file
+ */
+ 
+options {
+  IGNORE_CASE = false;
+  STATIC = false;
+}
+PARSER_BEGIN(ExpRegs)
+package uniandes.teolen.parserJavaCC.parserTaller;
+
+import java.util.*;
+ 
+public class ExpRegs {
+
+} 
+ 
+PARSER_END(ExpRegs)
+
+SKIP :
+{
+  "\r" | "\t" | "\n"
+}
+TOKEN : /* OPERATORS */
+{
+  		< SPACE: " " >
+|        <EQUAL: "=">
+|    	<COMMA: ",">
+| 		<COLON: ":">
+|    	<RPAR: ")">
+| 		<LPAR: "(">
+| 		<LCOR: " [ ">
+| 		<RCOR: " ]">
+| 		< MULT: "*" >
+| 		< PLUS: "+" >
+|		< REST: "-" >
+| 		< DIV: "/" >
+| 		< MOD: "%" > 
+| 		< G: ">" >
+| 		< L: "<" >
+| 		< GE: ">=" >
+| 		< LE: "<=" >
+| 		< E: "==" > 
+| 		< NE: "!=" > 	
+}
+
+TOKEN :
+{
+    < #DIGI: "0" | "1" | "2"| "3" | "4" | "5" |  "6" | "7" | "8" |"9" >
+|   < #MAY: ["A"-"Z"] >
+|   < #MIN: ["a"-"z"] >
+|   < VAR : "var" >
+|   < DEFINE : "define" >
+|   < PRINT : "print">
+| 	< IF : "if">
+}
+int expsRegs():
+{
+ArrayList <String> varsAccepted = new ArrayList<String >();
+ArrayList <String> funcsAccepted = new ArrayList<String >();
+varsAccepted.add("define");
+varsAccepted.add("var");
+varsAccepted.add("print");
+varsAccepted.add("if");
+funcsAccepted.add("define");
+funcsAccepted.add("var");
+funcsAccepted.add("print");
+funcsAccepted.add("if");
+}
+{
+   (variables())+
+   (functions())+
+   sysout()
+}
+void variables():
+{}
+{
+  	//TODO verificar que el var no esté ya en el array de accepted
+	< VAR > <SPACE> variable() (< SPACE >)? < EQUAL > (< SPACE >)? ea()
+}
+void variable():
+{ }
+{
+  (<#MIN>| <#MAY>)(<#MIN>| <#MAY> | <#DIGI>)*
+  
+}
+
+  
+void functions():
+{
+  ArrayList <String > parametros = new ArrayList<String >();
+  
+}
+{
+  //TODO verificar que el nomfunct no esté ya en el otro array de accepted
+  < DEFINE > <SPACE> nomfunct() <COLON > // TODO poner que la expresión aritmetica sea solo con los parametros
+}
+void nomfunct():
+{ }
+{
+	(<#MIN>| <#MAY> | < #DIGI >)+ < LPAR> (params()(<COMMA> params())*)? <RPAR>
+}
+
+void sysout():
+{}
+{
+  < PRINT > (< SPACE >)? < LPAR > (< SPACE >)? ea() (< SPACE >)? < RPAR >
+}
+  
+void ea():
+{ }
+{	//TODO verificar que el var si esté ya en el array de accepted
+	//TODO verificar que el nomfunct si esté ya en el otro array de accepted
+ 	(< DIGI >)+ ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | variable() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | nomfunct() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?| < LCOR > ea() < RCOR >((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | cond()((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?
+}
+
+void eb():
+{}  
+{
+	ea() (< G >|< GE > | < L > | < LE > | < E > | < NE > ) ea()
+}
+void cond():
+{ }
+{
+  < IF > (< SPACE >)? < LPAR > (< SPACE >)? eb() (< SPACE >)? < COMMA > (< SPACE >)? ea()  (< SPACE >)? < COMMA > (< SPACE >)? ea() (< SPACE >)? < RPAR >
+}
+
+
+void validarSiVariableEsta():
+{}
+{
+	< IF >
+}
+void validarSiFuncionEsta():
+{}
+{
+	<IF >
+	
+}
+
+  
+void params():
+{ }
+{
+  <IF >
+	// verifica que la ea que se cree despues del : use los parametros pasados por parametro
+}
+  
+
+
+
+
+
+
+
+
+  
