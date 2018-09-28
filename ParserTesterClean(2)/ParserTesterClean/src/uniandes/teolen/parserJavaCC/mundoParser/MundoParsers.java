@@ -7,8 +7,7 @@ import uniandes.teolen.parserJavaCC.myParserDR.ParserDR;
 import uniandes.teolen.parserJavaCC.newParser.NuevoParser;
 import uniandes.teolen.parserJavaCC.parserCAML.ParserCAMLco;
 import uniandes.teolen.parserJavaCC.parserProlog.ParserProlog;
-import uniandes.teolen.parserJavaCC.parserTaller.Proyecto1;
-import uniandes.teolen.parserJavaCC.parserTaller.ParserExpRegs;
+import uniandes.teolen.parserJavaCC.parserProyecto.Proyecto1;
 import uniandes.teolen.parserJavaCC.parserGrammars.ParserG;
 import uniandes.teolen.parserJavaCC.newParserPost.NuevoParserPost;
 
@@ -33,7 +32,7 @@ public class MundoParsers {
 	    parsers.add("Parser Prolog");
 	    parsers.add("Parser G");
 	    parsers.add("Nuevo Parser POST");
-	    parsers.add("Parser Taller");
+	    parsers.add("Proyecto1");
 	    
 	    currentParser =  0;
 
@@ -64,7 +63,7 @@ public class MundoParsers {
 	public ParserG getGParser(){
 		return new ParserG(System.in);
 	}
-	public Proyecto1 getExpRegs()
+	public Proyecto1 getProyecto1()
 	{
 		return new Proyecto1(System.in);
 	}
@@ -184,8 +183,8 @@ public class MundoParsers {
 		    	 resp = new String ("Error Lexico: "+e.getMessage());
 		     }
 		}
-		else if(parsers.get(currentParser).equals("Parser Taller")){
-			Proyecto1 nuevoParser = getExpRegs();
+		else if(parsers.get(currentParser).equals("Proyecto1")){
+			Proyecto1 nuevoParser = getProyecto1();
 			nuevoParser.ReInit(new java.io.StringReader(texto));
 			try {
 		    	int v = nuevoParser.expsRegs();

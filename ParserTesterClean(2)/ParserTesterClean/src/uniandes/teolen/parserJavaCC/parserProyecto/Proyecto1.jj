@@ -6,16 +6,16 @@ options {
   IGNORE_CASE = false;
   STATIC = false;
 }
-PARSER_BEGIN(ExpRegs)
-package uniandes.teolen.parserJavaCC.parserTaller;
+PARSER_BEGIN(Proyecto1)
+package uniandes.teolen.parserJavaCC.parserProyecto;
 
 import java.util.*;
  
-public class ExpRegs {
+public class Proyecto1{
 
 } 
  
-PARSER_END(ExpRegs)
+PARSER_END(Proyecto1)
 
 SKIP :
 {
@@ -46,15 +46,15 @@ TOKEN : /* OPERATORS */
 
 TOKEN :
 {
-    < #DIGI: "0" | "1" | "2"| "3" | "4" | "5" |  "6" | "7" | "8" |"9" >
-|   < #MAY: ["A"-"Z"] >
-|   < #MIN: ["a"-"z"] >
+    < DIGI: "0" | "1" | "2"| "3" | "4" | "5" |  "6" | "7" | "8" |"9" >
+|   < MAY: ["A"-"Z"] >
+|   < MIN: ["a"-"z"] >
 |   < VAR : "var" >
 |   < DEFINE : "define" >
 |   < PRINT : "print">
 | 	< IF : "if">
 }
-int expsRegs():
+int proyecto():
 {
 ArrayList <String> varsAccepted = new ArrayList<String >();
 ArrayList <String> funcsAccepted = new ArrayList<String >();
@@ -81,7 +81,7 @@ void variables():
 void variable():
 { }
 {
-  (<#MIN>| <#MAY>)(<#MIN>| <#MAY> | <#DIGI>)*
+  (<MIN>| <MAY>)(<MIN>| <MAY> | <DIGI>)*
   
 }
 
@@ -98,7 +98,7 @@ void functions():
 void nomfunct():
 { }
 {
-	(<#MIN>| <#MAY> | < #DIGI >)+ < LPAR> (params()(<COMMA> params())*)? <RPAR>
+	(<MIN>| <MAY> | < DIGI >)+ < LPAR> (params()(<COMMA> params())*)? <RPAR>
 }
 
 void sysout():
