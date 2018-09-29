@@ -23,12 +23,13 @@ PARSER_END(Proyecto1)
 
 SKIP :
 {
-  "\r" | "\t" | "\n"
+  "\r" | "\t" 
 }
 TOKEN : /* OPERATORS */
 {
   		< SPACE: " " >
 |        <EQUAL: "=">
+| 		< ENTER: "\n" >
 |    	<COMMA: ",">
 | 		<COLON: ":">
 |    	<RPAR: ")">
@@ -74,8 +75,8 @@ funcsAccepted.add(new Function("print"));
 funcsAccepted.add(new Function("if"));
 }
 {
-   (variables())+
-   (functions())+
+   (variables()<ENTER >)+
+   (functions()<ENTER >)+
    sysout()
    {
 		return 0;
@@ -196,7 +197,7 @@ void eacontodosparametros(ArrayList< String > parametrosPorUsar):
 }
 Token eaconalgunparametros(ArrayList< String > parametrosPorUsar):
 {
-	Token t;
+	Token t = null;
 }
 {
   	(t = validarSiParametroEsta(parametrosPorUsar) ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | validarSiFuncionEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))?|< NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | < LCOR > eaconalgunparametros(parametrosPorUsar)< RCOR > | cond())
@@ -232,7 +233,7 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
 void ea():
 {}
 {	
- 	validarSiFuncionEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?|< NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | < LCOR > ea() < RCOR > | cond()
+ 	(< NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?) | (validarSiFuncionEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?) | (validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?) | (< LCOR > ea() < RCOR >) | (cond())
 }
 
 

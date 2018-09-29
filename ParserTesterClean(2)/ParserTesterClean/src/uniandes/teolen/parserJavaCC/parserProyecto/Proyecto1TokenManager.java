@@ -74,8 +74,10 @@ private int jjMoveStringLiteralDfa0_0()
 {
    switch(curChar)
    {
+      case 10:
+         return jjStopAtPos(0, 5);
       case 32:
-         jjmatchedKind = 4;
+         jjmatchedKind = 3;
          return jjMoveStringLiteralDfa1_0(0xc00L);
       case 33:
          return jjMoveStringLiteralDfa1_0(0x400000L);
@@ -101,7 +103,7 @@ private int jjMoveStringLiteralDfa0_0()
          jjmatchedKind = 18;
          return jjMoveStringLiteralDfa1_0(0x100000L);
       case 61:
-         jjmatchedKind = 5;
+         jjmatchedKind = 4;
          return jjMoveStringLiteralDfa1_0(0x200000L);
       case 62:
          jjmatchedKind = 17;
@@ -438,7 +440,7 @@ static final int[] jjnextStates = {
 
 /** Token literal values. */
 public static final String[] jjstrLiteralImages = {
-"", null, null, null, "\40", "\75", "\54", "\72", "\51", "\50", "\40\133\40", 
+"", null, null, "\40", "\75", "\12", "\54", "\72", "\51", "\50", "\40\133\40", 
 "\40\135", "\52", "\53", "\55", "\57", "\45", "\76", "\74", "\76\75", "\74\75", "\75\75", 
 "\41\75", null, null, null, "\166\141\162", null, null, null, 
 "\144\145\146\151\156\145", "\160\162\151\156\164", "\151\146", null, };
@@ -448,10 +450,10 @@ public static final String[] lexStateNames = {
    "DEFAULT",
 };
 static final long[] jjtoToken = {
-   0x3fc7ffff1L, 
+   0x3fc7ffff9L, 
 };
 static final long[] jjtoSkip = {
-   0xeL, 
+   0x6L, 
 };
 protected SimpleCharStream input_stream;
 private final int[] jjrounds = new int[6];
@@ -554,7 +556,7 @@ public Token getNextToken()
    }
 
    try { input_stream.backup(0);
-      while (curChar <= 13 && (0x2600L & (1L << curChar)) != 0L)
+      while (curChar <= 13 && (0x2200L & (1L << curChar)) != 0L)
          curChar = input_stream.BeginToken();
    }
    catch (java.io.IOException e1) { continue EOFLoop; }
