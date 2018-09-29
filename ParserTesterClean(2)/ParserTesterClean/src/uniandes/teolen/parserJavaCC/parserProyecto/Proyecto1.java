@@ -2,12 +2,14 @@
 package uniandes.teolen.parserJavaCC.parserProyecto;
 
 import java.util.*;
+import uniandes.teolen.parserJavaCC.parserProyecto.Function;
 
 public class Proyecto1 implements Proyecto1Constants {
 
-	ArrayList <String> varsAccepted = new ArrayList<String >();
-	ArrayList <Function> funcsAccepted = new ArrayList< Function >();
-  final public void proyecto() throws ParseException {
+        ArrayList <String> varsAccepted = new ArrayList<String >();
+        ArrayList <Function> funcsAccepted = new ArrayList< Function >();
+
+  final public int proyecto() throws ParseException {
 varsAccepted.add("define");
 varsAccepted.add("var");
 varsAccepted.add("print");
@@ -41,6 +43,8 @@ funcsAccepted.add(new Function("if"));
       }
     }
     sysout();
+                {if (true) return 0;}
+    throw new Error("Missing return statement in function");
   }
 
   final public void variables() throws ParseException {
@@ -92,7 +96,7 @@ funcsAccepted.add(new Function("if"));
     jj_consume_token(COLON);
   }
 
-  final public void nomfunct(ArrayList< String > params) throws ParseException {
+  final public void nomfunct(ArrayList< String > parametro) throws ParseException {
    Token t;
     label_3:
     while (true) {
@@ -109,7 +113,7 @@ funcsAccepted.add(new Function("if"));
     jj_consume_token(LPAR);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VAR_NAME:
-      params(params);
+      params(parametro);
       label_4:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -121,7 +125,7 @@ funcsAccepted.add(new Function("if"));
           break label_4;
         }
         jj_consume_token(COMMA);
-        params(params);
+        params(parametro);
       }
       break;
     default:
@@ -140,6 +144,9 @@ funcsAccepted.add(new Function("if"));
                 {
                         {if (true) throw new Error("la funcion ya existe " + t.image);}
                 }
+                Function a = new Function(t.image);
+                a.setParametros(parametro);
+                funcsAccepted.add(a);
   }
 
   final public void sysout() throws ParseException {
@@ -246,7 +253,6 @@ funcsAccepted.add(new Function("if"));
         jj_la1[13] = jj_gen;
         ;
       }
-      break;
       validarSiVariableEsta();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MULT:
@@ -476,7 +482,7 @@ funcsAccepted.add(new Function("if"));
   }
 
   final public void validarSiFuncionEsta() throws ParseException {
-	  ArrayList <String > parametros = new ArrayList<String >();
+        ArrayList <String > parametros = new ArrayList<String >();
         Token t;
     label_5:
     while (true) {
@@ -513,23 +519,42 @@ funcsAccepted.add(new Function("if"));
       ;
     }
     jj_consume_token(RPAR);
-                boolean encontrado = false;
+                Function f = null;
                 int i = 0;
-                while(i < funcsAccepted.size() && !encontrado)
+                while(i < funcsAccepted.size() && f == null)
                 {
-                        encontrado = funcsAccepted.get(i).equals(t.image);
+                        if(funcsAccepted.get(i).getNombre().equals(t.image))
+                        encontrado = funcsAccepted.get(i);
                         i++;
                 }
-                if(!encontrado)
+                if(encontrado == null)
                 {
                         {if (true) throw new Error("la funcion no existe " + t.image);}
                 }
+                if(f.getParametros().size() == parametros.size())
+                {
+                        {if (true) throw new Error("el numero de parametros de la funcion no coincide ");}
+                }
   }
 
-  final public void params(ArrayList< String > params) throws ParseException {
-        params = new ArrayList< String >();
+  final public void params(ArrayList< String > parametro) throws ParseException {
         Token t;
     t = jj_consume_token(VAR_NAME);
+                {
+                boolean encontrado = false;
+                int i = 0;
+                while(i < parametro.size() && !encontrado)
+                {
+                        encontrado = parametro.get(i).equals(t.image);
+                        i++;
+                }
+                if(encontrado)
+                {
+                        {if (true) throw new Error("el parametro ya existe " + t.image);}
+                }
+                parametro.add(t.image);
+        }
+        // verifica que la ea que se cree despues del : use los parametros pasados por parametro
 
   }
 

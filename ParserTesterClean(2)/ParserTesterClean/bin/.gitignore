@@ -1,4 +1,7 @@
-/uniandes/
+/ExpReg.java
+/ExpRegConstants.java
+/ExpRegTokenManager.java
+/.gitignore
 /ExpReg.class
 /ExpReg.jj
 /ExpRegConstants.class
@@ -7,3 +10,4 @@
 /SimpleCharStream.class
 /Token.class
 /TokenMgrError.class
+/uniandes/

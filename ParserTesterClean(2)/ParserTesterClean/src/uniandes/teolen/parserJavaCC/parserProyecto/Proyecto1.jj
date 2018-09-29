@@ -10,10 +10,13 @@ PARSER_BEGIN(Proyecto1)
 package uniandes.teolen.parserJavaCC.parserProyecto;
 
 import java.util.*;
+import uniandes.teolen.parserJavaCC.parserProyecto.Function;
  
 public class Proyecto1{
-	ArrayList <String> varsAccepted = new ArrayList<String >();
+
+  	ArrayList <String> varsAccepted = new ArrayList<String >();
 	ArrayList <Function> funcsAccepted = new ArrayList< Function >();
+	
 } 
  
 PARSER_END(Proyecto1)
@@ -133,9 +136,9 @@ void nomfunct(ArrayList< String > parametro):
 		{
 			throw new Error("la funcion ya existe " + t.image);
 		}
-		a = new Function(t.image);
+		Function a = new Function(t.image);
 		a.setParametros(parametro);
-		funcsAccepted(a);
+		funcsAccepted.add(a);
   	}	
 }
 
@@ -166,7 +169,7 @@ void cond():
 
 void validarSiVariableEsta():
 {
-	token t;
+	Token t;
 }
 {
 	(t = < VAR_NAME >)
@@ -187,7 +190,7 @@ void validarSiVariableEsta():
 void validarSiFuncionEsta():
 {
   	ArrayList <String > parametros = new ArrayList<String >();
-	token t;
+	Token t;
 }
 {
 	(t = < FUNC_NAME >)+ < LPAR > (params(parametros)(<COMMA> params(parametros))*)? <RPAR>
@@ -197,10 +200,10 @@ void validarSiFuncionEsta():
 		while(i < funcsAccepted.size() && f == null)
 		{
 		  	if(funcsAccepted.get(i).getNombre().equals(t.image))
-		  		encontrado = funcsAccepted.get(i);
+		  	encontrado = funcsAccepted.get(i);
 			i++;
 		}
-		if(!encontrado)
+		if(encontrado == null)
 		{
 			throw new Error("la funcion no existe " + t.image);
 		}
@@ -234,14 +237,6 @@ void params(ArrayList< String > parametro):
 		parametro.add(t.image);
 	}
 	// verifica que la ea que se cree despues del : use los parametros pasados por parametro
+	}
 }
-  
 
-
-
-
-
-
-
-
-  
