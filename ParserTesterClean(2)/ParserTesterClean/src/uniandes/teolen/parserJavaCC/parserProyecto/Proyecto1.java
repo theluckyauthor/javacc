@@ -6,7 +6,7 @@ import uniandes.teolen.parserJavaCC.parserProyecto.Function;
 
 public class Proyecto1 implements Proyecto1Constants {
 
-        ArrayList <String> varsAccepted = new ArrayList<String >();
+        ArrayList <String> varsAccepted = new ArrayList<String>();
         ArrayList <Function> funcsAccepted = new ArrayList< Function >();
 
   final public int proyecto() throws ParseException {
@@ -94,9 +94,11 @@ funcsAccepted.add(new Function("if"));
     jj_consume_token(SPACE);
     nomfunct(parametros);
     jj_consume_token(COLON);
+    eacontodosparametros(parametros);
   }
 
   final public void nomfunct(ArrayList< String > parametro) throws ParseException {
+  // Crea el nombre de la función con la lista de parámetros
    Token t;
     t = jj_consume_token(FUNC_NAME);
     jj_consume_token(LPAR);
@@ -138,6 +140,28 @@ funcsAccepted.add(new Function("if"));
                 funcsAccepted.add(a);
   }
 
+  final public void params(ArrayList< String > parametro) throws ParseException {
+  // método para verificar que el parámetro no esté en la lista de parámetros
+        Token t;
+    t = jj_consume_token(FUNC_NAME);
+                {
+                boolean encontrado = false;
+                int i = 0;
+                while(i < parametro.size() && !encontrado)
+                {
+                        encontrado = parametro.get(i).equals(t.image);
+                        i++;
+                }
+                if(encontrado)
+                {
+                        {if (true) throw new Error("el parametro ya existe " + t.image);}
+                }
+                parametro.add(t.image);
+        }
+        // verifica que la ea que se cree despues del : use los parametros pasados por parametro
+
+  }
+
   final public void sysout() throws ParseException {
     jj_consume_token(PRINT);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -169,10 +193,27 @@ funcsAccepted.add(new Function("if"));
     jj_consume_token(RPAR);
   }
 
-  final public void ea() throws ParseException {
+  final public void eacontodosparametros(ArrayList< String > parametrosPorUsar) throws ParseException {
+ Token t;
+    t = eaconalgunparametros(parametrosPorUsar);
+                String s = t.image;
+                boolean encontrado = true;
+                int i = 0;
+                while(i < parametrosPorUsar.size() && encontrado)
+                {
+                        encontrado = s.contains(parametrosPorUsar.get(i));
+                        i++;
+                }
+                if(!encontrado)
+                {
+                        {if (true) throw new Error("No usa todos los parametros " + t.image);}
+                }
+  }
+
+  final public void eaconalgunparametros(ArrayList< String > parametrosPorUsar) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case FUNC_NAME:
-      validarSiFuncionEsta();
+      validarSiParametroEsta(parametrosPorUsar);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MULT:
       case PLUS:
@@ -200,10 +241,45 @@ funcsAccepted.add(new Function("if"));
           jj_consume_token(-1);
           throw new ParseException();
         }
-        ea();
+        eaconalgunparametros(parametrosPorUsar);
         break;
       default:
         jj_la1[10] = jj_gen;
+        ;
+      }
+      break;
+      validarSiFuncionEsta();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case MULT:
+      case PLUS:
+      case REST:
+      case DIV:
+      case MOD:
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case MULT:
+          jj_consume_token(MULT);
+          break;
+        case DIV:
+          jj_consume_token(DIV);
+          break;
+        case REST:
+          jj_consume_token(REST);
+          break;
+        case PLUS:
+          jj_consume_token(PLUS);
+          break;
+        case MOD:
+          jj_consume_token(MOD);
+          break;
+        default:
+          jj_la1[11] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        eaconalgunparametros(parametrosPorUsar);
+        break;
+      default:
+        jj_la1[12] = jj_gen;
         ;
       }
       break;
@@ -232,14 +308,14 @@ funcsAccepted.add(new Function("if"));
           jj_consume_token(MOD);
           break;
         default:
-          jj_la1[11] = jj_gen;
+          jj_la1[13] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
-        ea();
+        eaconalgunparametros(parametrosPorUsar);
         break;
       default:
-        jj_la1[12] = jj_gen;
+        jj_la1[14] = jj_gen;
         ;
       }
       break;
@@ -268,14 +344,158 @@ funcsAccepted.add(new Function("if"));
           jj_consume_token(MOD);
           break;
         default:
-          jj_la1[13] = jj_gen;
+          jj_la1[15] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        eaconalgunparametros(parametrosPorUsar);
+        break;
+      default:
+        jj_la1[16] = jj_gen;
+        ;
+      }
+      break;
+    case LCOR:
+      jj_consume_token(LCOR);
+      eaconalgunparametros(parametrosPorUsar);
+      jj_consume_token(RCOR);
+      break;
+    case IF:
+      cond();
+      break;
+    default:
+      jj_la1[17] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  final public void validarSiParametroEsta(ArrayList< String > parametro) throws ParseException {
+        Token t;
+    t = jj_consume_token(FUNC_NAME);
+                boolean f = false;
+                int i = 0;
+                while(i < parametro.size() && !f)
+                {
+                        if(parametro.get(i).equals(t.image))
+                        {
+                                f = true;
+                        }
+                        i++;
+                }
+                if(!f)
+                {
+                        {if (true) throw new Error("el parametro no existe " + t.image);}
+                }
+  }
+
+  final public void ea() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case FUNC_NAME:
+      validarSiFuncionEsta();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case MULT:
+      case PLUS:
+      case REST:
+      case DIV:
+      case MOD:
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case MULT:
+          jj_consume_token(MULT);
+          break;
+        case DIV:
+          jj_consume_token(DIV);
+          break;
+        case REST:
+          jj_consume_token(REST);
+          break;
+        case PLUS:
+          jj_consume_token(PLUS);
+          break;
+        case MOD:
+          jj_consume_token(MOD);
+          break;
+        default:
+          jj_la1[18] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         ea();
         break;
       default:
-        jj_la1[14] = jj_gen;
+        jj_la1[19] = jj_gen;
+        ;
+      }
+      break;
+    case NUMBER:
+      jj_consume_token(NUMBER);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case MULT:
+      case PLUS:
+      case REST:
+      case DIV:
+      case MOD:
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case MULT:
+          jj_consume_token(MULT);
+          break;
+        case DIV:
+          jj_consume_token(DIV);
+          break;
+        case REST:
+          jj_consume_token(REST);
+          break;
+        case PLUS:
+          jj_consume_token(PLUS);
+          break;
+        case MOD:
+          jj_consume_token(MOD);
+          break;
+        default:
+          jj_la1[20] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        ea();
+        break;
+      default:
+        jj_la1[21] = jj_gen;
+        ;
+      }
+      break;
+    case VAR_NAME:
+      validarSiVariableEsta();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case MULT:
+      case PLUS:
+      case REST:
+      case DIV:
+      case MOD:
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case MULT:
+          jj_consume_token(MULT);
+          break;
+        case DIV:
+          jj_consume_token(DIV);
+          break;
+        case REST:
+          jj_consume_token(REST);
+          break;
+        case PLUS:
+          jj_consume_token(PLUS);
+          break;
+        case MOD:
+          jj_consume_token(MOD);
+          break;
+        default:
+          jj_la1[22] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        ea();
+        break;
+      default:
+        jj_la1[23] = jj_gen;
         ;
       }
       break;
@@ -288,10 +508,77 @@ funcsAccepted.add(new Function("if"));
       cond();
       break;
     default:
-      jj_la1[15] = jj_gen;
+      jj_la1[24] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+  }
+
+  final public void cond() throws ParseException {
+    jj_consume_token(IF);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SPACE:
+      jj_consume_token(SPACE);
+      break;
+    default:
+      jj_la1[25] = jj_gen;
+      ;
+    }
+    jj_consume_token(LPAR);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SPACE:
+      jj_consume_token(SPACE);
+      break;
+    default:
+      jj_la1[26] = jj_gen;
+      ;
+    }
+    eb();
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SPACE:
+      jj_consume_token(SPACE);
+      break;
+    default:
+      jj_la1[27] = jj_gen;
+      ;
+    }
+    jj_consume_token(COMMA);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SPACE:
+      jj_consume_token(SPACE);
+      break;
+    default:
+      jj_la1[28] = jj_gen;
+      ;
+    }
+    ea();
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SPACE:
+      jj_consume_token(SPACE);
+      break;
+    default:
+      jj_la1[29] = jj_gen;
+      ;
+    }
+    jj_consume_token(COMMA);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SPACE:
+      jj_consume_token(SPACE);
+      break;
+    default:
+      jj_la1[30] = jj_gen;
+      ;
+    }
+    ea();
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SPACE:
+      jj_consume_token(SPACE);
+      break;
+    default:
+      jj_la1[31] = jj_gen;
+      ;
+    }
+    jj_consume_token(RPAR);
   }
 
   final public void eb() throws ParseException {
@@ -316,94 +603,11 @@ funcsAccepted.add(new Function("if"));
       jj_consume_token(NE);
       break;
     default:
-      jj_la1[16] = jj_gen;
+      jj_la1[32] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
     ea();
-  }
-
-  final public void cond() throws ParseException {
-    jj_consume_token(IF);
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SPACE:
-      jj_consume_token(SPACE);
-      break;
-    default:
-      jj_la1[17] = jj_gen;
-      ;
-    }
-    jj_consume_token(LPAR);
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SPACE:
-      jj_consume_token(SPACE);
-      break;
-    default:
-      jj_la1[18] = jj_gen;
-      ;
-    }
-    eb();
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SPACE:
-      jj_consume_token(SPACE);
-      break;
-    default:
-      jj_la1[19] = jj_gen;
-      ;
-    }
-    jj_consume_token(COMMA);
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SPACE:
-      jj_consume_token(SPACE);
-      break;
-    default:
-      jj_la1[20] = jj_gen;
-      ;
-    }
-    ea();
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SPACE:
-      jj_consume_token(SPACE);
-      break;
-    default:
-      jj_la1[21] = jj_gen;
-      ;
-    }
-    jj_consume_token(COMMA);
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SPACE:
-      jj_consume_token(SPACE);
-      break;
-    default:
-      jj_la1[22] = jj_gen;
-      ;
-    }
-    ea();
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SPACE:
-      jj_consume_token(SPACE);
-      break;
-    default:
-      jj_la1[23] = jj_gen;
-      ;
-    }
-    jj_consume_token(RPAR);
-  }
-
-  final public void validarSiVariableEsta() throws ParseException {
-        Token t;
-    t = jj_consume_token(VAR_NAME);
-                boolean encontrado = false;
-                int i = 0;
-                while(i < varsAccepted.size() && !encontrado)
-                {
-                        encontrado = varsAccepted.get(i).equals(t.image);
-                        i++;
-                }
-                if(!encontrado)
-                {
-                        {if (true) throw new Error("la variable no existe " + t.image);}
-                }
   }
 
   final public void validarSiFuncionEsta() throws ParseException {
@@ -421,7 +625,7 @@ funcsAccepted.add(new Function("if"));
           ;
           break;
         default:
-          jj_la1[24] = jj_gen;
+          jj_la1[33] = jj_gen;
           break label_4;
         }
         jj_consume_token(COMMA);
@@ -429,7 +633,7 @@ funcsAccepted.add(new Function("if"));
       }
       break;
     default:
-      jj_la1[25] = jj_gen;
+      jj_la1[34] = jj_gen;
       ;
     }
     jj_consume_token(RPAR);
@@ -453,43 +657,19 @@ funcsAccepted.add(new Function("if"));
                 }
   }
 
-  final public void params(ArrayList< String > parametro) throws ParseException {
+  final public void validarSiVariableEsta() throws ParseException {
         Token t;
-    t = jj_consume_token(FUNC_NAME);
-                {
+    t = jj_consume_token(VAR_NAME);
                 boolean encontrado = false;
                 int i = 0;
-                while(i < parametro.size() && !encontrado)
+                while(i < varsAccepted.size() && !encontrado)
                 {
-                        encontrado = parametro.get(i).equals(t.image);
+                        encontrado = varsAccepted.get(i).equals(t.image);
                         i++;
                 }
-                if(encontrado)
+                if(!encontrado)
                 {
-                        {if (true) throw new Error("el parametro ya existe " + t.image);}
-                }
-                parametro.add(t.image);
-        }
-        // verifica que la ea que se cree despues del : use los parametros pasados por parametro
-
-  }
-
-  final public void validarSiParametroEsta(ArrayList< String > parametro) throws ParseException {
-        Token t;
-    t = jj_consume_token(FUNC_NAME);
-                boolean f = false;
-                int i = 0;
-                while(i < parametro.size() && !f)
-                {
-                        if(parametro.get(i).equals(t.image))
-                        {
-                                f = true;
-                        }
-                        i++;
-                }
-                if(!f)
-                {
-                        {if (true) throw new Error("el parametro no existe " + t.image);}
+                        {if (true) throw new Error("la variable no existe " + t.image);}
                 }
   }
 
@@ -502,7 +682,7 @@ funcsAccepted.add(new Function("if"));
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[26];
+  final private int[] jj_la1 = new int[35];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -510,10 +690,10 @@ funcsAccepted.add(new Function("if"));
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x4000000,0x20000000,0x10,0x10,0x40,0x10000000,0x10,0x10,0x10,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x98000400,0x7e0000,0x10,0x10,0x10,0x10,0x10,0x10,0x10,0x40,0x10000000,};
+      jj_la1_0 = new int[] {0x4000000,0x20000000,0x10,0x10,0x40,0x10000000,0x10,0x10,0x10,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x98000400,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x98000400,0x10,0x10,0x10,0x10,0x10,0x10,0x10,0x7e0000,0x40,0x10000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -527,7 +707,7 @@ funcsAccepted.add(new Function("if"));
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 35; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -541,7 +721,7 @@ funcsAccepted.add(new Function("if"));
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 35; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -551,7 +731,7 @@ funcsAccepted.add(new Function("if"));
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 35; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -561,7 +741,7 @@ funcsAccepted.add(new Function("if"));
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 35; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -570,7 +750,7 @@ funcsAccepted.add(new Function("if"));
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 35; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -579,7 +759,7 @@ funcsAccepted.add(new Function("if"));
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 35; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -635,7 +815,7 @@ funcsAccepted.add(new Function("if"));
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 26; i++) {
+    for (int i = 0; i < 35; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

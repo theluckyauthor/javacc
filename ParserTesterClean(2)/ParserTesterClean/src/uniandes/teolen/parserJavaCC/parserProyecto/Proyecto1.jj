@@ -14,7 +14,7 @@ import uniandes.teolen.parserJavaCC.parserProyecto.Function;
  
 public class Proyecto1{
 
-  	ArrayList <String> varsAccepted = new ArrayList<String >();
+  	ArrayList <String> varsAccepted = new ArrayList<String>();
 	ArrayList <Function> funcsAccepted = new ArrayList< Function >();
 	
 } 
@@ -83,7 +83,6 @@ funcsAccepted.add(new Function("if"));
 void variables():
 {}
 {
-  	//TODO verificar que el var no esté ya en el array de accepted
 	< VAR > <SPACE> variable() (< SPACE >)? < EQUAL > (< SPACE >)? ea()
 }
 void variable():
@@ -112,14 +111,13 @@ void variable():
 void functions():
 {
   ArrayList <String > parametros = new ArrayList<String >();
-  
 }
 {
-  //TODO verificar que el nomfunct no esté ya en el otro array de accepted
-  < DEFINE > <SPACE> nomfunct(parametros) <COLON > // TODO poner que la expresión aritmetica sea solo con los parametros
+  < DEFINE > <SPACE> nomfunct(parametros) <COLON > eacontodosparametros(parametros)
 }
 void nomfunct(ArrayList< String > parametro):
 {
+  // Crea el nombre de la función con la lista de parámetros
    Token t;
 }
 {
@@ -142,51 +140,106 @@ void nomfunct(ArrayList< String > parametro):
   	}	
 }
 
+void params(ArrayList< String > parametro):
+{
+  // método para verificar que el parámetro no esté en la lista de parámetros
+	Token t;
+}
+{
+	(t = < FUNC_NAME >)
+	{
+		{
+		boolean encontrado = false;
+	  	int i = 0;
+		while(i < parametro.size() && !encontrado)
+		{
+			encontrado = parametro.get(i).equals(t.image);
+			i++;
+		}
+		if(encontrado)
+		{
+			throw new Error("el parametro ya existe " + t.image);
+		}
+		parametro.add(t.image);
+	}
+	// verifica que la ea que se cree despues del : use los parametros pasados por parametro
+	}
+}
+
 void sysout():
 {}
 {
   < PRINT > (< SPACE >)? < LPAR > (< SPACE >)? ea() (< SPACE >)? < RPAR >
 }
   
+void eacontodosparametros(ArrayList< String > parametrosPorUsar):
+{Token t;}
+{
+ 	(t = eaconalgunparametros(parametrosPorUsar))
+ 	{
+		String s = t.image;
+		boolean encontrado = true;
+	  	int i = 0;
+		while(i < parametrosPorUsar.size() && encontrado)
+		{
+			encontrado = s.contains(parametrosPorUsar.get(i));
+			i++;
+		}
+		if(!encontrado)
+		{
+			throw new Error("No usa todos los parametros " + t.image);
+		}
+	}
+}
+void eaconalgunparametros(ArrayList< String > parametrosPorUsar):
+{}
+{
+  validarSiParametroEsta(parametrosPorUsar) ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | validarSiFuncionEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))?|< NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | < LCOR > eaconalgunparametros(parametrosPorUsar)< RCOR > | cond()
+}
+void validarSiParametroEsta(ArrayList< String > parametro):
+{
+	Token t;
+}
+{
+	(t = < FUNC_NAME >)
+  	{
+		boolean f = false;
+	  	int i = 0;
+		while(i < parametro.size() && !f)
+		{
+		  	if(parametro.get(i).equals(t.image))
+		  	{ 
+		  		f = true;
+		  	}
+			i++;
+		}
+		if(!f)
+		{
+			throw new Error("el parametro no existe " + t.image);
+		}
+  	}		
+}
+
 void ea():
-{ }
-{	//TODO verificar que el var si esté ya en el array de accepted
-	//TODO verificar que el nomfunct si esté ya en el otro array de accepted
+{}
+{	
  	validarSiFuncionEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?|< NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | < LCOR > ea() < RCOR > | cond()
 }
 
-void eb():
-{}  
-{
-	ea() (< G >|< GE > | < L > | < LE > | < E > | < NE > ) ea()
-}
+
+
 void cond():
 { }
 {
   < IF > (< SPACE >)? < LPAR > (< SPACE >)? eb() (< SPACE >)? < COMMA > (< SPACE >)? ea()  (< SPACE >)? < COMMA > (< SPACE >)? ea() (< SPACE >)? < RPAR >
 }
+void eb():
+{}  
+{
+	ea() (< G >|< GE > | < L > | < LE > | < E > | < NE > ) ea()
+}
 
 
-void validarSiVariableEsta():
-{
-	Token t;
-}
-{
-	(t = < VAR_NAME >)
-  	{
-		boolean encontrado = false;
-	  	int i = 0;
-		while(i < varsAccepted.size() && !encontrado)
-		{
-			encontrado = varsAccepted.get(i).equals(t.image);
-			i++;
-		}
-		if(!encontrado)
-		{
-			throw new Error("la variable no existe " + t.image);
-		}
-  	}		
-}
 void validarSiFuncionEsta():
 {
   	ArrayList <String > parametros = new ArrayList<String >();
@@ -216,53 +269,30 @@ void validarSiFuncionEsta():
   	}		
 }
 
-  
-void params(ArrayList< String > parametro):
+void validarSiVariableEsta():
 {
 	Token t;
 }
 {
-	(t = < FUNC_NAME >)
-	{
-		{
+	(t = < VAR_NAME >)
+  	{
 		boolean encontrado = false;
 	  	int i = 0;
-		while(i < parametro.size() && !encontrado)
+		while(i < varsAccepted.size() && !encontrado)
 		{
-			encontrado = parametro.get(i).equals(t.image);
+			encontrado = varsAccepted.get(i).equals(t.image);
 			i++;
 		}
-		if(encontrado)
+		if(!encontrado)
 		{
-			throw new Error("el parametro ya existe " + t.image);
-		}
-		parametro.add(t.image);
-	}
-	// verifica que la ea que se cree despues del : use los parametros pasados por parametro
-	}
-}
-
-void validarSiParametroEsta(ArrayList< String > parametro):
-{
-	Token t;
-}
-{
-	(t = < FUNC_NAME >)
-  	{
-		boolean f = false;
-	  	int i = 0;
-		while(i < parametro.size() && !f)
-		{
-		  	if(parametro.get(i).equals(t.image))
-		  	{ 
-		  		f = true;
-		  	}
-			i++;
-		}
-		if(!f)
-		{
-			throw new Error("el parametro no existe " + t.image);
+			throw new Error("la variable no existe " + t.image);
 		}
   	}		
 }
+
+
+  
+
+
+
 
