@@ -123,7 +123,7 @@ void nomfunct(ArrayList< String > parametro):
    Token t;
 }
 {
-  	(t = < FUNC_NAME >)+ < LPAR> (params(parametro)(<COMMA> params(parametro))*)? <RPAR>
+  	(t = < FUNC_NAME >) < LPAR> (params(parametro)(<COMMA> params(parametro))*)? <RPAR>
   	{
 		boolean encontrado = false;
 	  	int i = 0;
@@ -152,7 +152,7 @@ void ea():
 { }
 {	//TODO verificar que el var si esté ya en el array de accepted
 	//TODO verificar que el nomfunct si esté ya en el otro array de accepted
- 	validarSiFuncionEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?|< NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | < LCOR > ea() < RCOR >((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | cond()((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?
+ 	validarSiFuncionEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?|< NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | < LCOR > ea() < RCOR > | cond()
 }
 
 void eb():
@@ -193,14 +193,16 @@ void validarSiFuncionEsta():
 	Token t;
 }
 {
-	(t = < FUNC_NAME >)+ < LPAR > (params(parametros)(<COMMA> params(parametros))*)? <RPAR>
+	(t = < FUNC_NAME >) < LPAR > (params(parametros)(<COMMA> params(parametros))*)? <RPAR>
   	{
 		Function f = null;
 	  	int i = 0;
 		while(i < funcsAccepted.size() && f == null)
 		{
 		  	if(funcsAccepted.get(i).getNombre().equals(t.image))
-		  	f = funcsAccepted.get(i);
+		  	{ 
+		  		f = funcsAccepted.get(i);
+		 	}
 			i++;
 		}
 		if(f == null)
@@ -220,7 +222,7 @@ void params(ArrayList< String > parametro):
 	Token t;
 }
 {
-	(t = < VAR_NAME >)
+	(t = < FUNC_NAME >)
 	{
 		{
 		boolean encontrado = false;
@@ -238,5 +240,29 @@ void params(ArrayList< String > parametro):
 	}
 	// verifica que la ea que se cree despues del : use los parametros pasados por parametro
 	}
+}
+
+void validarSiParametroEsta(ArrayList< String > parametro):
+{
+	Token t;
+}
+{
+	(t = < FUNC_NAME >)
+  	{
+		boolean f = false;
+	  	int i = 0;
+		while(i < parametro.size() && !f)
+		{
+		  	if(parametro.get(i).equals(t.image))
+		  	{ 
+		  		f = true;
+		  	}
+			i++;
+		}
+		if(!f)
+		{
+			throw new Error("el parametro no existe " + t.image);
+		}
+  	}		
 }
 
