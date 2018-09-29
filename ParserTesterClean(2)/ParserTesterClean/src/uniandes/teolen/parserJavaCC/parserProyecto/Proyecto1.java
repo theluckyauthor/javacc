@@ -5,9 +5,9 @@ import java.util.*;
 
 public class Proyecto1 implements Proyecto1Constants {
 
-  final public int proyecto() throws ParseException {
-ArrayList <String> varsAccepted = new ArrayList<String >();
-ArrayList <Function> funcsAccepted = new ArrayList< Function >();
+	ArrayList <String> varsAccepted = new ArrayList<String >();
+	ArrayList <Function> funcsAccepted = new ArrayList< Function >();
+  final public void proyecto() throws ParseException {
 varsAccepted.add("define");
 varsAccepted.add("var");
 varsAccepted.add("print");
@@ -88,12 +88,12 @@ funcsAccepted.add(new Function("if"));
   ArrayList <String > parametros = new ArrayList<String >();
     jj_consume_token(DEFINE);
     jj_consume_token(SPACE);
-    nomfunct();
+    nomfunct(parametros);
     jj_consume_token(COLON);
   }
 
-  final public void nomfunct() throws ParseException {
-   token t;
+  final public void nomfunct(ArrayList< String > params) throws ParseException {
+   Token t;
     label_3:
     while (true) {
       t = jj_consume_token(FUNC_NAME);
@@ -109,7 +109,7 @@ funcsAccepted.add(new Function("if"));
     jj_consume_token(LPAR);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VAR_NAME:
-      params();
+      params(params);
       label_4:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -121,7 +121,7 @@ funcsAccepted.add(new Function("if"));
           break label_4;
         }
         jj_consume_token(COMMA);
-        params();
+        params(params);
       }
       break;
     default:
@@ -460,7 +460,7 @@ funcsAccepted.add(new Function("if"));
   }
 
   final public void validarSiVariableEsta() throws ParseException {
-        token t;
+        Token t;
     t = jj_consume_token(VAR_NAME);
                 boolean encontrado = false;
                 int i = 0;
@@ -476,7 +476,8 @@ funcsAccepted.add(new Function("if"));
   }
 
   final public void validarSiFuncionEsta() throws ParseException {
-        token t;
+	  ArrayList <String > parametros = new ArrayList<String >();
+        Token t;
     label_5:
     while (true) {
       t = jj_consume_token(FUNC_NAME);
@@ -492,7 +493,7 @@ funcsAccepted.add(new Function("if"));
     jj_consume_token(LPAR);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VAR_NAME:
-      params();
+      params(parametros);
       label_6:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -504,7 +505,7 @@ funcsAccepted.add(new Function("if"));
           break label_6;
         }
         jj_consume_token(COMMA);
-        params();
+        params(parametros);
       }
       break;
     default:

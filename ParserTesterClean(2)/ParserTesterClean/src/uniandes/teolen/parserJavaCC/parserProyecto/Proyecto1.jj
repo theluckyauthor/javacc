@@ -12,7 +12,8 @@ package uniandes.teolen.parserJavaCC.parserProyecto;
 import java.util.*;
  
 public class Proyecto1{
-
+	ArrayList <String> varsAccepted = new ArrayList<String >();
+	ArrayList <Function> funcsAccepted = new ArrayList< Function >();
 } 
  
 PARSER_END(Proyecto1)
@@ -59,8 +60,6 @@ TOKEN :
 }
 int proyecto():
 {
-ArrayList <String> varsAccepted = new ArrayList<String >();
-ArrayList <Function> funcsAccepted = new ArrayList< Function >();
 varsAccepted.add("define");
 varsAccepted.add("var");
 varsAccepted.add("print");
@@ -74,6 +73,9 @@ funcsAccepted.add(new Function("if"));
    (variables())+
    (functions())+
    sysout()
+   {
+		return 0;
+   }
 }
 void variables():
 {}
@@ -113,12 +115,12 @@ void functions():
   //TODO verificar que el nomfunct no esté ya en el otro array de accepted
   < DEFINE > <SPACE> nomfunct() <COLON > // TODO poner que la expresión aritmetica sea solo con los parametros
 }
-void nomfunct():
+void nomfunct(ArrayList< String > parametro):
 {
-   token t;
+   Token t;
 }
 {
-  	(t = < FUNC_NAME >)+ < LPAR> (params()(<COMMA> params())*)? <RPAR>
+  	(t = < FUNC_NAME >)+ < LPAR> (params(parametro)(<COMMA> params(parametro))*)? <RPAR>
   	{
 		boolean encontrado = false;
 	  	int i = 0;
@@ -131,6 +133,9 @@ void nomfunct():
 		{
 			throw new Error("la funcion ya existe " + t.image);
 		}
+		a = new Function(t.image);
+		a.setParametros(parametro);
+		funcsAccepted(a);
   	}	
 }
 
@@ -181,35 +186,52 @@ void validarSiVariableEsta():
 }
 void validarSiFuncionEsta():
 {
+  	ArrayList <String > parametros = new ArrayList<String >();
 	token t;
 }
 {
-	(t = < FUNC_NAME >)+ < LPAR > (params()(<COMMA> params())*)? <RPAR>
+	(t = < FUNC_NAME >)+ < LPAR > (params(parametros)(<COMMA> params(parametros))*)? <RPAR>
   	{
-		boolean encontrado = false;
+		Function f = null;
 	  	int i = 0;
-		while(i < funcsAccepted.size() && !encontrado)
+		while(i < funcsAccepted.size() && f == null)
 		{
-			encontrado = funcsAccepted.get(i).equals(t.image);
+		  	if(funcsAccepted.get(i).getNombre().equals(t.image))
+		  		encontrado = funcsAccepted.get(i);
 			i++;
 		}
 		if(!encontrado)
 		{
 			throw new Error("la funcion no existe " + t.image);
 		}
+		if(f.getParametros().size() == parametros.size())
+		{
+			throw new Error("el numero de parametros de la funcion no coincide ");
+		}
   	}		
 }
 
   
-void params(ArrayList< String > params):
+void params(ArrayList< String > parametro):
 {
-	params = new ArrayList< String >();
 	Token t;
 }
 {
 	(t = < VAR_NAME >)
 	{
-
+		{
+		boolean encontrado = false;
+	  	int i = 0;
+		while(i < parametro.size() && !encontrado)
+		{
+			encontrado = parametro.get(i).equals(t.image);
+			i++;
+		}
+		if(encontrado)
+		{
+			throw new Error("el parametro ya existe " + t.image);
+		}
+		parametro.add(t.image);
 	}
 	// verifica que la ea que se cree despues del : use los parametros pasados por parametro
 }
