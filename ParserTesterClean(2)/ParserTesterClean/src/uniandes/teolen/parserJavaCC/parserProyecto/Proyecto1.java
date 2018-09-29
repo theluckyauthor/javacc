@@ -509,7 +509,6 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
   	}		
 }*/
   final public void validarNombreEsta(ArrayList< String > parametro) throws ParseException {
-        ArrayList <String > parametros = new ArrayList<String >();
         Token t;
         Token k = null;
     t = jj_consume_token(VAR_NAME);
@@ -546,6 +545,7 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
       jj_la1[25] = jj_gen;
       ;
     }
+                System.out.println(t.image);
                 System.out.println("entro validar nombre: var");
                 boolean encontrado = false;
                 int i = 0;

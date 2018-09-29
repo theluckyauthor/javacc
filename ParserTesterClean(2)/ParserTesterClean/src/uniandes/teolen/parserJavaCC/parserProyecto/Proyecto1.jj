@@ -325,13 +325,13 @@ void eb(ArrayList< String > parametrosPorUsar):
 
 void validarNombreEsta(ArrayList< String > parametro):
 {
-  	ArrayList <String > parametros = new ArrayList<String >();
 	Token t;
 	Token k = null;
 }
 {
 	(t = < VAR_NAME >)(< LPAR > ((k=ea(parametro)(<COMMA> ea(parametro))*))? <RPAR>)?
   	{
+  	  	System.out.println(t.image);
   	  	System.out.println("entro validar nombre: var");
 		boolean encontrado = false;
 	  	int i = 0;
