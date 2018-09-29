@@ -116,7 +116,7 @@ void functions():
 }
 {
   //TODO verificar que el nomfunct no esté ya en el otro array de accepted
-  < DEFINE > <SPACE> nomfunct() <COLON > // TODO poner que la expresión aritmetica sea solo con los parametros
+  < DEFINE > <SPACE> nomfunct(parametros) <COLON > // TODO poner que la expresión aritmetica sea solo con los parametros
 }
 void nomfunct(ArrayList< String > parametro):
 {
@@ -152,7 +152,7 @@ void ea():
 { }
 {	//TODO verificar que el var si esté ya en el array de accepted
 	//TODO verificar que el nomfunct si esté ya en el otro array de accepted
- 	< NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?| < LCOR > ea() < RCOR >((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | cond()((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?
+ 	validarSiFuncionEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?|< NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | < LCOR > ea() < RCOR >((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | cond()((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?
 }
 
 void eb():
@@ -200,10 +200,10 @@ void validarSiFuncionEsta():
 		while(i < funcsAccepted.size() && f == null)
 		{
 		  	if(funcsAccepted.get(i).getNombre().equals(t.image))
-		  	encontrado = funcsAccepted.get(i);
+		  	f = funcsAccepted.get(i);
 			i++;
 		}
-		if(encontrado == null)
+		if(f == null)
 		{
 			throw new Error("la funcion no existe " + t.image);
 		}
