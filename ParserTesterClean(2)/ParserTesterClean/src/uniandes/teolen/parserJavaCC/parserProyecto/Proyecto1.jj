@@ -23,7 +23,7 @@ PARSER_END(Proyecto1)
 
 SKIP :
 {
-  "\r" | "\t" 
+  "\r" | "\t"
 }
 TOKEN : /* OPERATORS */
 {
@@ -54,14 +54,14 @@ TOKEN :
     < #DIGI: "0" | "1" | "2"| "3" | "4" | "5" |  "6" | "7" | "8" |"9" >
 |   < #MAY: ["A"-"Z"] >
 |   < #MIN: ["a"-"z"] >
+| 	< NUMBER: (< DIGI >)+ > 
 |   < VAR : "var" >
-| 	< VAR_NAME: (<MIN>| <MAY>)(<MIN>| <MAY> | <DIGI>)+>
-| 	< FUNC_NAME: (<MIN>| <MAY> | < DIGI >)+ >
-| 	< PARAM_NAME: (<MIN>)(< MIN > | <MAY> | < DIGI >)+ >
-|   < DEFINE : "define" >
+| 	< DEFINE : "define" >
 |   < PRINT : "print">
 | 	< IF : "if">
-| 	< NUMBER: (< DIGI >)+ >  
+//| 	< FUNC_NAME: (<MIN>| <MAY> )+ >
+| 	< VAR_NAME: (<MIN>| <MAY>)(<MIN>| <MAY> | <DIGI>)*>
+| 	< PARAM_NAME: (<MIN>)(< MIN > | <MAY> | < DIGI >)+ >
 }
 int proyecto():
 {
@@ -75,8 +75,8 @@ funcsAccepted.add(new Function("print"));
 funcsAccepted.add(new Function("if"));
 }
 {
-   (variables()<ENTER >)+
-   (functions()<ENTER >)+
+   (variables()<ENTER >)*
+   (functions()<ENTER >)*
    sysout()
    {
 		return 0;
@@ -85,27 +85,60 @@ funcsAccepted.add(new Function("if"));
 void variables():
 {}
 {
-	< VAR > <SPACE> variable() (< SPACE >)? < EQUAL > (< SPACE >)? ea()
+	< VAR > <SPACE> NombreRepetido(null, 0) (< SPACE >)? < EQUAL > (< SPACE >)? ea(null)
 }
-void variable():
+void NombreRepetido(ArrayList< String > parametro, int identificador):
 {
 	Token t;
 }
 {
-  	(t = < VAR_NAME >)
+  	(t = < VAR_NAME >)(< LPAR> (NombreRepetido(parametro, 2)(<COMMA> NombreRepetido(parametro, 2))*)? <RPAR>)?
   	{
-		boolean encontrado = false;
-	  	int i = 0;
-		while(i < varsAccepted.size() && !encontrado)
+  	  	if(identificador == 0)
+  		  { 
+			boolean encontrado = false;
+		  	int i = 0;
+			while(i < varsAccepted.size() && !encontrado)
+			{
+				encontrado = varsAccepted.get(i).equals(t.image);
+				i++;
+			}
+			if(encontrado)
+			{
+				throw new Error("la variable ya existe " + t.image);
+			}
+			varsAccepted.add(t.image);
+		}else if(identificador == 1)
 		{
-			encontrado = varsAccepted.get(i).equals(t.image);
-			i++;
-		}
-		if(encontrado)
+			boolean encontrado = false;
+	  		int i = 0;
+			while(i < funcsAccepted.size() && !encontrado)
+			{
+				encontrado = funcsAccepted.get(i).getNombre().equals(t.image);
+				i++;
+			}
+			if(encontrado)
+			{
+				throw new Error("la funcion ya existe " + t.image);
+			}
+			Function a = new Function(t.image);
+			a.setParametros(parametro);
+			funcsAccepted.add(a);
+		}else
 		{
-			throw new Error("la variable ya existe " + t.image);
-		}
-		varsAccepted.add(t.image);
+			boolean encontrado = false;
+	  		int i = 0;
+			while(i < parametro.size() && !encontrado)
+			{
+				encontrado = parametro.get(i).equals(t.image);
+				i++;
+			}
+			if(encontrado)
+			{
+				throw new Error("el parametro ya existe " + t.image);
+			}
+				parametro.add(t.image);
+			}
   	}	  
 }
 
@@ -115,9 +148,10 @@ void functions():
   ArrayList <String > parametros = new ArrayList<String >();
 }
 {
-  < DEFINE > <SPACE> nomfunct(parametros) <COLON > eacontodosparametros(parametros)
+  < DEFINE > <SPACE> NombreRepetido(parametros, 1)<COLON > < ENTER >eacontodosparametros(parametros) < ENTER >
+  
 }
-void nomfunct(ArrayList< String > parametro):
+/*void nomfunct(ArrayList< String > parametro):
 {
   // Crea el nombre de la función con la lista de parámetros
    Token t;
@@ -129,7 +163,7 @@ void nomfunct(ArrayList< String > parametro):
 	  	int i = 0;
 		while(i < funcsAccepted.size() && !encontrado)
 		{
-			encontrado = funcsAccepted.get(i).equals(t.image);
+			encontrado = funcsAccepted.get(i).getNombre().equals(t.image);
 			i++;
 		}
 		if(encontrado)
@@ -140,7 +174,7 @@ void nomfunct(ArrayList< String > parametro):
 		a.setParametros(parametro);
 		funcsAccepted.add(a);
   	}	
-}
+}*/
 
 void params(ArrayList< String > parametro):
 {
@@ -150,7 +184,7 @@ void params(ArrayList< String > parametro):
 {
 	(t = < PARAM_NAME >)
 	{
-		{
+		
 		boolean encontrado = false;
 	  	int i = 0;
 		while(i < parametro.size() && !encontrado)
@@ -165,13 +199,12 @@ void params(ArrayList< String > parametro):
 		parametro.add(t.image);
 	}
 	// verifica que la ea que se cree despues del : use los parametros pasados por parametro
-	}
 }
 
 void sysout():
 {}
 {
-  < PRINT > (< SPACE >)? < LPAR > (< SPACE >)? ea() (< SPACE >)? < RPAR >
+  < PRINT > (< SPACE >)? < LPAR > (< SPACE >)? ea(null) (< SPACE >)? < RPAR >
 }
   
 void eacontodosparametros(ArrayList< String > parametrosPorUsar):
@@ -179,7 +212,7 @@ void eacontodosparametros(ArrayList< String > parametrosPorUsar):
   	Token t;
 }
 {
- 	(t = eaconalgunparametros(parametrosPorUsar))
+ 	(t = ea(parametrosPorUsar))
  	{
 		String s = t.image;
 		boolean encontrado = true;
@@ -195,12 +228,12 @@ void eacontodosparametros(ArrayList< String > parametrosPorUsar):
 		}
 	}
 }
-Token eaconalgunparametros(ArrayList< String > parametrosPorUsar):
+/*Token eaconalgunparametros(ArrayList< String > parametrosPorUsar):
 {
 	Token t = null;
 }
 {
-  	(t = validarSiParametroEsta(parametrosPorUsar) ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | validarSiFuncionEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))?|< NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | < LCOR > eaconalgunparametros(parametrosPorUsar)< RCOR > | cond())
+  	(t = < NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | validarNombreEsta(parametrosPorUsar) ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | < LCOR > eaconalgunparametros(parametrosPorUsar)< RCOR > | cond())
   	{
 		return t;
   	}
@@ -228,29 +261,40 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
 		}
 		return t;
   	}		
-}
+}*/
 
-void ea():
-{}
+Token ea(ArrayList< String > parametrosPorUsar):
+{
+  	System.out.println("entro en exp arit");
+	Token t = null;
+}
 {	
- 	(< NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?) | (validarSiFuncionEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?) | (validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?) | (< LCOR > ea() < RCOR >) | (cond())
+ 	((t = < NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea(parametrosPorUsar))? | validarNombreEsta(parametrosPorUsar) ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea(parametrosPorUsar))? | < LCOR > ea(parametrosPorUsar)< RCOR > | cond(parametrosPorUsar)))
+ 	{
+ 	  	System.out.println(t.image);
+		return t;
+ 	}
 }
 
 
 
-void cond():
-{ }
+void cond(ArrayList< String > parametrosPorUsar):
 {
-  < IF > (< SPACE >)? < LPAR > (< SPACE >)? eb() (< SPACE >)? < COMMA > (< SPACE >)? ea()  (< SPACE >)? < COMMA > (< SPACE >)? ea() (< SPACE >)? < RPAR >
+	System.out.println("entro en condicional");
 }
-void eb():
-{}  
 {
-	ea() (< G >|< GE > | < L > | < LE > | < E > | < NE > ) ea()
+  < IF > (< SPACE >)? < LPAR > (< SPACE >)? eb(parametrosPorUsar) (< SPACE >)? < COMMA > (< SPACE >)? ea(parametrosPorUsar)  (< SPACE >)? < COMMA > (< SPACE >)? ea(parametrosPorUsar) (< SPACE >)? < RPAR >
+}
+void eb(ArrayList< String > parametrosPorUsar):
+{
+	System.out.println("entro en exp bool");
+}  
+{
+	ea(parametrosPorUsar) (< G >|< GE > | < L > | < LE > | < E > | < NE > ) ea(parametrosPorUsar)
 }
 
 
-void validarSiFuncionEsta():
+/*void validarSiFuncionEsta():
 {
   	ArrayList <String > parametros = new ArrayList<String >();
 	Token t;
@@ -277,15 +321,18 @@ void validarSiFuncionEsta():
 			throw new Error("el numero de parametros de la funcion no coincide ");
 		}
   	}		
-}
+}*/
 
-void validarSiVariableEsta():
+void validarNombreEsta(ArrayList< String > parametro):
 {
+  	ArrayList <String > parametros = new ArrayList<String >();
 	Token t;
+	Token k = null;
 }
 {
-	(t = < VAR_NAME >)
+	(t = < VAR_NAME >)(< LPAR > ((k=ea(parametro)(<COMMA> ea(parametro))*))? <RPAR>)?
   	{
+  	  	System.out.println("entro validar nombre: var");
 		boolean encontrado = false;
 	  	int i = 0;
 		while(i < varsAccepted.size() && !encontrado)
@@ -293,11 +340,45 @@ void validarSiVariableEsta():
 			encontrado = varsAccepted.get(i).equals(t.image);
 			i++;
 		}
-		if(!encontrado)
+		Function f = null;
+  		i = 0;
+  		System.out.println("entro validar nombre: func");
+		while(i < funcsAccepted.size() && f == null)
+		{
+		  	if(funcsAccepted.get(i).getNombre().equals(t.image))
+		  	{ 
+			  	f = funcsAccepted.get(i);
+			}
+			i++;
+		}
+		boolean h = false;
+	  	i = 0;
+	  	System.out.println("entro validar nombre: param");
+		while(i < parametro.size() && !h)
+		{
+		  	if(parametro.get(i).equals(t.image))
+	  		{ 
+	  			h = true;
+		  	}
+			i++;
+		}
+		System.out.println(encontrado);
+		System.out.println(f);
+		System.out.println(h);
+		System.out.println("paso");
+		if(!encontrado && f == null && !h)
 		{
 			throw new Error("la variable no existe " + t.image);
 		}
-  	}		
+		System.out.println("paso 2");
+		if(f!=null){  
+			if(f.getParametros().size() == k.image.split(", ").length)
+			{
+				throw new Error("el numero de parametros de la funcion no coincide ");
+			}
+		}
+		System.out.println("paso 3");
+	}		
 }
 
 
