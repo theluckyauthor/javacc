@@ -103,7 +103,7 @@ funcsAccepted.add(new Function("if"));
     t = jj_consume_token(FUNC_NAME);
     jj_consume_token(LPAR);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case FUNC_NAME:
+    case PARAM_NAME:
       params(parametro);
       label_3:
       while (true) {
@@ -143,7 +143,7 @@ funcsAccepted.add(new Function("if"));
   final public void params(ArrayList< String > parametro) throws ParseException {
   // método para verificar que el parámetro no esté en la lista de parámetros
         Token t;
-    t = jj_consume_token(FUNC_NAME);
+    t = jj_consume_token(PARAM_NAME);
                 {
                 boolean encontrado = false;
                 int i = 0;
@@ -194,7 +194,7 @@ funcsAccepted.add(new Function("if"));
   }
 
   final public void eacontodosparametros(ArrayList< String > parametrosPorUsar) throws ParseException {
- Token t;
+        Token t;
     t = eaconalgunparametros(parametrosPorUsar);
                 String s = t.image;
                 boolean encontrado = true;
@@ -210,10 +210,11 @@ funcsAccepted.add(new Function("if"));
                 }
   }
 
-  final public void eaconalgunparametros(ArrayList< String > parametrosPorUsar) throws ParseException {
+  final public Token eaconalgunparametros(ArrayList< String > parametrosPorUsar) throws ParseException {
+        Token t = null;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case FUNC_NAME:
-      validarSiParametroEsta(parametrosPorUsar);
+    case PARAM_NAME:
+      t = validarSiParametroEsta(parametrosPorUsar);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MULT:
       case PLUS:
@@ -248,6 +249,7 @@ funcsAccepted.add(new Function("if"));
         ;
       }
       break;
+    case FUNC_NAME:
       validarSiFuncionEsta();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MULT:
@@ -368,11 +370,13 @@ funcsAccepted.add(new Function("if"));
       jj_consume_token(-1);
       throw new ParseException();
     }
+                {if (true) return t;}
+    throw new Error("Missing return statement in function");
   }
 
-  final public void validarSiParametroEsta(ArrayList< String > parametro) throws ParseException {
-        Token t;
-    t = jj_consume_token(FUNC_NAME);
+  final public Token validarSiParametroEsta(ArrayList< String > parametro) throws ParseException {
+        Token t = null;
+    t = jj_consume_token(PARAM_NAME);
                 boolean f = false;
                 int i = 0;
                 while(i < parametro.size() && !f)
@@ -387,6 +391,8 @@ funcsAccepted.add(new Function("if"));
                 {
                         {if (true) throw new Error("el parametro no existe " + t.image);}
                 }
+                {if (true) return t;}
+    throw new Error("Missing return statement in function");
   }
 
   final public void ea() throws ParseException {
@@ -616,7 +622,7 @@ funcsAccepted.add(new Function("if"));
     t = jj_consume_token(FUNC_NAME);
     jj_consume_token(LPAR);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case FUNC_NAME:
+    case PARAM_NAME:
       params(parametros);
       label_4:
       while (true) {
@@ -690,10 +696,10 @@ funcsAccepted.add(new Function("if"));
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x4000000,0x20000000,0x10,0x10,0x40,0x10000000,0x10,0x10,0x10,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x98000400,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x98000400,0x10,0x10,0x10,0x10,0x10,0x10,0x10,0x7e0000,0x40,0x10000000,};
+      jj_la1_0 = new int[] {0x4000000,0x40000000,0x10,0x10,0x40,0x20000000,0x10,0x10,0x10,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x38000400,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x18000400,0x10,0x10,0x10,0x10,0x10,0x10,0x10,0x7e0000,0x40,0x20000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -810,7 +816,7 @@ funcsAccepted.add(new Function("if"));
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[33];
+    boolean[] la1tokens = new boolean[34];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -827,7 +833,7 @@ funcsAccepted.add(new Function("if"));
         }
       }
     }
-    for (int i = 0; i < 33; i++) {
+    for (int i = 0; i < 34; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

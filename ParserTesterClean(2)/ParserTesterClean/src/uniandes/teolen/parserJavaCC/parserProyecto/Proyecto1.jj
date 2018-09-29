@@ -56,6 +56,7 @@ TOKEN :
 |   < VAR : "var" >
 | 	< VAR_NAME: (<MIN>| <MAY>)(<MIN>| <MAY> | <DIGI>)+>
 | 	< FUNC_NAME: (<MIN>| <MAY> | < DIGI >)+ >
+| 	< PARAM_NAME: (<MIN>)(< MIN > | <MAY> | < DIGI >)+ >
 |   < DEFINE : "define" >
 |   < PRINT : "print">
 | 	< IF : "if">
@@ -146,7 +147,7 @@ void params(ArrayList< String > parametro):
 	Token t;
 }
 {
-	(t = < FUNC_NAME >)
+	(t = < PARAM_NAME >)
 	{
 		{
 		boolean encontrado = false;
@@ -173,7 +174,9 @@ void sysout():
 }
   
 void eacontodosparametros(ArrayList< String > parametrosPorUsar):
-{Token t;}
+{
+  	Token t;
+}
 {
  	(t = eaconalgunparametros(parametrosPorUsar))
  	{
@@ -191,17 +194,22 @@ void eacontodosparametros(ArrayList< String > parametrosPorUsar):
 		}
 	}
 }
-void eaconalgunparametros(ArrayList< String > parametrosPorUsar):
-{}
-{
-  validarSiParametroEsta(parametrosPorUsar) ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | validarSiFuncionEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))?|< NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | < LCOR > eaconalgunparametros(parametrosPorUsar)< RCOR > | cond()
-}
-void validarSiParametroEsta(ArrayList< String > parametro):
+Token eaconalgunparametros(ArrayList< String > parametrosPorUsar):
 {
 	Token t;
 }
 {
-	(t = < FUNC_NAME >)
+  	(t = validarSiParametroEsta(parametrosPorUsar) ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | validarSiFuncionEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))?|< NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) eaconalgunparametros(parametrosPorUsar))? | < LCOR > eaconalgunparametros(parametrosPorUsar)< RCOR > | cond())
+  	{
+		return t;
+  	}
+}
+Token validarSiParametroEsta(ArrayList< String > parametro):
+{
+	Token t = null;
+}
+{
+	(t = < PARAM_NAME >)
   	{
 		boolean f = false;
 	  	int i = 0;
@@ -217,6 +225,7 @@ void validarSiParametroEsta(ArrayList< String > parametro):
 		{
 			throw new Error("el parametro no existe " + t.image);
 		}
+		return t;
   	}		
 }
 
