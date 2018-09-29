@@ -187,7 +187,7 @@ public class MundoParsers {
 			Proyecto1 nuevoParser = getProyecto1();
 			nuevoParser.ReInit(new java.io.StringReader(texto));
 			try {
-		    	int v = nuevoParser.expsRegs();
+		    	int v = nuevoParser.proyecto();
 		    	resp = new String("OK   "+v+ "\n");
 		    }catch (Exception e) {
 		        resp = new String ("Error de Sintaxis: "+e.getMessage());

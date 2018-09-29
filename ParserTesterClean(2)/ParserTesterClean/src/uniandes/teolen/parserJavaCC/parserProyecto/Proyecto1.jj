@@ -46,26 +46,29 @@ TOKEN : /* OPERATORS */
 
 TOKEN :
 {
-    < DIGI: "0" | "1" | "2"| "3" | "4" | "5" |  "6" | "7" | "8" |"9" >
-|   < MAY: ["A"-"Z"] >
-|   < MIN: ["a"-"z"] >
+    < #DIGI: "0" | "1" | "2"| "3" | "4" | "5" |  "6" | "7" | "8" |"9" >
+|   < #MAY: ["A"-"Z"] >
+|   < #MIN: ["a"-"z"] >
 |   < VAR : "var" >
+| 	< VAR_NAME: (<MIN>| <MAY>)(<MIN>| <MAY> | <DIGI>)+>
+| 	< FUNC_NAME: (<MIN>| <MAY> | < DIGI >)+ >
 |   < DEFINE : "define" >
 |   < PRINT : "print">
 | 	< IF : "if">
+| 	< NUMBER: (< DIGI >)+ >  
 }
 int proyecto():
 {
 ArrayList <String> varsAccepted = new ArrayList<String >();
-ArrayList <String> funcsAccepted = new ArrayList<String >();
+ArrayList <Function> funcsAccepted = new ArrayList< Function >();
 varsAccepted.add("define");
 varsAccepted.add("var");
 varsAccepted.add("print");
 varsAccepted.add("if");
-funcsAccepted.add("define");
-funcsAccepted.add("var");
-funcsAccepted.add("print");
-funcsAccepted.add("if");
+funcsAccepted.add(new Function("define"));
+funcsAccepted.add(new Function("var"));
+funcsAccepted.add(new Function("print"));
+funcsAccepted.add(new Function("if"));
 }
 {
    (variables())+
@@ -79,10 +82,25 @@ void variables():
 	< VAR > <SPACE> variable() (< SPACE >)? < EQUAL > (< SPACE >)? ea()
 }
 void variable():
-{ }
 {
-  (<MIN>| <MAY>)(<MIN>| <MAY> | <DIGI>)*
-  
+	Token t;
+}
+{
+  	(t = < VAR_NAME >)
+  	{
+		boolean encontrado = false;
+	  	int i = 0;
+		while(i < varsAccepted.size() && !encontrado)
+		{
+			encontrado = varsAccepted.get(i).equals(t.image);
+			i++;
+		}
+		if(encontrado)
+		{
+			throw new Error("la variable ya existe " + t.image);
+		}
+		varsAccepted.add(t.image);
+  	}	  
 }
 
   
@@ -96,9 +114,24 @@ void functions():
   < DEFINE > <SPACE> nomfunct() <COLON > // TODO poner que la expresión aritmetica sea solo con los parametros
 }
 void nomfunct():
-{ }
 {
-	(<MIN>| <MAY> | < DIGI >)+ < LPAR> (params()(<COMMA> params())*)? <RPAR>
+   token t;
+}
+{
+  	(t = < FUNC_NAME >)+ < LPAR> (params()(<COMMA> params())*)? <RPAR>
+  	{
+		boolean encontrado = false;
+	  	int i = 0;
+		while(i < funcsAccepted.size() && !encontrado)
+		{
+			encontrado = funcsAccepted.get(i).equals(t.image);
+			i++;
+		}
+		if(encontrado)
+		{
+			throw new Error("la funcion ya existe " + t.image);
+		}
+  	}	
 }
 
 void sysout():
@@ -111,7 +144,7 @@ void ea():
 { }
 {	//TODO verificar que el var si esté ya en el array de accepted
 	//TODO verificar que el nomfunct si esté ya en el otro array de accepted
- 	(< DIGI >)+ ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | variable() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | nomfunct() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?| < LCOR > ea() < RCOR >((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | cond()((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?
+ 	< NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | validarSiVariableEsta() ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?| < LCOR > ea() < RCOR >((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())? | cond()((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea())?
 }
 
 void eb():
@@ -127,22 +160,57 @@ void cond():
 
 
 void validarSiVariableEsta():
-{}
 {
-	< IF >
+	token t;
+}
+{
+	(t = < VAR_NAME >)
+  	{
+		boolean encontrado = false;
+	  	int i = 0;
+		while(i < varsAccepted.size() && !encontrado)
+		{
+			encontrado = varsAccepted.get(i).equals(t.image);
+			i++;
+		}
+		if(!encontrado)
+		{
+			throw new Error("la variable no existe " + t.image);
+		}
+  	}		
 }
 void validarSiFuncionEsta():
-{}
 {
-	<IF >
-	
+	token t;
+}
+{
+	(t = < FUNC_NAME >)+ < LPAR > (params()(<COMMA> params())*)? <RPAR>
+  	{
+		boolean encontrado = false;
+	  	int i = 0;
+		while(i < funcsAccepted.size() && !encontrado)
+		{
+			encontrado = funcsAccepted.get(i).equals(t.image);
+			i++;
+		}
+		if(!encontrado)
+		{
+			throw new Error("la funcion no existe " + t.image);
+		}
+  	}		
 }
 
   
-void params():
-{ }
+void params(ArrayList< String > params):
 {
-  <IF >
+	params = new ArrayList< String >();
+	Token t;
+}
+{
+	(t = < VAR_NAME >)
+	{
+
+	}
 	// verifica que la ea que se cree despues del : use los parametros pasados por parametro
 }
   
