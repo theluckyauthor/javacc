@@ -52,7 +52,7 @@ funcsAccepted.add(new Function("if"));
   final public void variables() throws ParseException {
     jj_consume_token(VAR);
     jj_consume_token(SPACE);
-    NombreRepetido(null, 0);
+    NombreRepetido(new ArrayList <String >(), 0);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SPACE:
       jj_consume_token(SPACE);
@@ -70,7 +70,7 @@ funcsAccepted.add(new Function("if"));
       jj_la1[3] = jj_gen;
       ;
     }
-    ea(null);
+    ea(new ArrayList <String >());
   }
 
   final public void NombreRepetido(ArrayList< String > parametro, int identificador) throws ParseException {
@@ -225,7 +225,8 @@ funcsAccepted.add(new Function("if"));
       jj_la1[8] = jj_gen;
       ;
     }
-    ea(null);
+    ea(new ArrayList <String >());
+                                                                               System.out.println("Not null");
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SPACE:
       jj_consume_token(SPACE);
@@ -554,44 +555,49 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
                         encontrado = varsAccepted.get(i).equals(t.image);
                         i++;
                 }
+                System.out.println(encontrado);
+                System.out.println("Not null");
+                if(encontrado== false)
+                {
                 Function f = null;
                 i = 0;
                 System.out.println("entro validar nombre: func");
                 while(i < funcsAccepted.size() && f == null)
                 {
-                        if(funcsAccepted.get(i).getNombre().equals(t.image))
+                        if(funcsAccepted.get(i)!= null && funcsAccepted.get(i).getNombre().equals(t.image))
                         {
                                 f = funcsAccepted.get(i);
                         }
                         i++;
                 }
+                System.out.println(f);
+                if(f == null)
+                {
                 boolean h = false;
                 i = 0;
                 System.out.println("entro validar nombre: param");
                 while(i < parametro.size() && !h)
                 {
-                        if(parametro.get(i).equals(t.image))
+                        if(parametro.get(i)!= null && parametro.get(i).equals(t.image))
                         {
                                 h = true;
                         }
                         i++;
                 }
-                System.out.println(encontrado);
-                System.out.println(f);
                 System.out.println(h);
-                System.out.println("paso");
-                if(!encontrado && f == null && !h)
+                if(!h)
                 {
                         {if (true) throw new Error("la variable no existe " + t.image);}
                 }
-                System.out.println("paso 2");
-                if(f!=null){
+                }
+                else
+                {
                         if(f.getParametros().size() == k.image.split(", ").length)
                         {
                                 {if (true) throw new Error("el numero de parametros de la funcion no coincide ");}
                         }
                 }
-                System.out.println("paso 3");
+                }
   }
 
   /** Generated Token Manager. */

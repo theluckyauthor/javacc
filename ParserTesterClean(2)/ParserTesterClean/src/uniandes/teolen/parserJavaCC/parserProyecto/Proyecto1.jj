@@ -85,7 +85,7 @@ funcsAccepted.add(new Function("if"));
 void variables():
 {}
 {
-	< VAR > <SPACE> NombreRepetido(null, 0) (< SPACE >)? < EQUAL > (< SPACE >)? ea(null)
+	< VAR > <SPACE> NombreRepetido(new ArrayList <String >(), 0) (< SPACE >)? < EQUAL > (< SPACE >)? ea(new ArrayList <String >())
 }
 void NombreRepetido(ArrayList< String > parametro, int identificador):
 {
@@ -204,7 +204,8 @@ void params(ArrayList< String > parametro):
 void sysout():
 {}
 {
-  < PRINT > (< SPACE >)? < LPAR > (< SPACE >)? ea(null) (< SPACE >)? < RPAR >
+  < PRINT > (< SPACE >)? < LPAR > (< SPACE >)? ea(new ArrayList <String >()) { System.out.println("Not null");}
+     (< SPACE >)? < RPAR >
 }
   
 void eacontodosparametros(ArrayList< String > parametrosPorUsar):
@@ -326,7 +327,7 @@ void eb(ArrayList< String > parametrosPorUsar):
 void validarNombreEsta(ArrayList< String > parametro):
 {
 	Token t;
-	Token k = null;
+	Token k;
 }
 {
 	(t = < VAR_NAME >)(< LPAR > ((k=ea(parametro)(<COMMA> ea(parametro))*))? <RPAR>)?
@@ -340,44 +341,49 @@ void validarNombreEsta(ArrayList< String > parametro):
 			encontrado = varsAccepted.get(i).equals(t.image);
 			i++;
 		}
+		System.out.println(encontrado);
+		System.out.println("Not null");
+		if(encontrado== false)
+		{
 		Function f = null;
   		i = 0;
   		System.out.println("entro validar nombre: func");
 		while(i < funcsAccepted.size() && f == null)
 		{
-		  	if(funcsAccepted.get(i).getNombre().equals(t.image))
+		  	if(funcsAccepted.get(i)!= null && funcsAccepted.get(i).getNombre().equals(t.image))
 		  	{ 
 			  	f = funcsAccepted.get(i);
 			}
 			i++;
 		}
+		System.out.println(f);
+		if(f == null)
+		{
 		boolean h = false;
 	  	i = 0;
 	  	System.out.println("entro validar nombre: param");
 		while(i < parametro.size() && !h)
 		{
-		  	if(parametro.get(i).equals(t.image))
+		  	if(parametro.get(i)!= null && parametro.get(i).equals(t.image))
 	  		{ 
 	  			h = true;
 		  	}
 			i++;
 		}
-		System.out.println(encontrado);
-		System.out.println(f);
 		System.out.println(h);
-		System.out.println("paso");
-		if(!encontrado && f == null && !h)
+		if(!h)
 		{
 			throw new Error("la variable no existe " + t.image);
 		}
-		System.out.println("paso 2");
-		if(f!=null){  
+		}
+		else
+		{
 			if(f.getParametros().size() == k.image.split(", ").length)
 			{
 				throw new Error("el numero de parametros de la funcion no coincide ");
 			}
+		}   
 		}
-		System.out.println("paso 3");
 	}		
 }
 
