@@ -204,7 +204,7 @@ void params(ArrayList< String > parametro):
 void sysout():
 {}
 {
-  < PRINT > (< SPACE >)? < LPAR > (< SPACE >)? ea(new ArrayList <String >()) { System.out.println("Not null");}
+  < PRINT > (< SPACE >)? < LPAR > (< SPACE >)? ea(new ArrayList <String >()) { System.out.println("Not null ea");}
      (< SPACE >)? < RPAR >
 }
   
@@ -272,7 +272,6 @@ Token ea(ArrayList< String > parametrosPorUsar):
 {	
  	((t = < NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea(parametrosPorUsar))? | validarNombreEsta(parametrosPorUsar) ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea(parametrosPorUsar))? | < LCOR > ea(parametrosPorUsar)< RCOR > | cond(parametrosPorUsar)))
  	{
- 	  	System.out.println(t.image);
 		return t;
  	}
 }
@@ -327,7 +326,7 @@ void eb(ArrayList< String > parametrosPorUsar):
 void validarNombreEsta(ArrayList< String > parametro):
 {
 	Token t;
-	Token k;
+	Token k= null;
 }
 {
 	(t = < VAR_NAME >)(< LPAR > ((k=ea(parametro)(<COMMA> ea(parametro))*))? <RPAR>)?
@@ -378,7 +377,7 @@ void validarNombreEsta(ArrayList< String > parametro):
 		}
 		else
 		{
-			if(f.getParametros().size() == k.image.split(", ").length)
+			if(f.getParametros()!= null && k!= null && f.getParametros().size() == k.image.split(", ").length)
 			{
 				throw new Error("el numero de parametros de la funcion no coincide ");
 			}

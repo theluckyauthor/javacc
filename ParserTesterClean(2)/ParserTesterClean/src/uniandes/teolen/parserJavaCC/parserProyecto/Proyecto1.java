@@ -226,7 +226,7 @@ funcsAccepted.add(new Function("if"));
       ;
     }
     ea(new ArrayList <String >());
-                                                                               System.out.println("Not null");
+                                                                               System.out.println("Not null ea");
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SPACE:
       jj_consume_token(SPACE);
@@ -378,7 +378,6 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
       jj_consume_token(-1);
       throw new ParseException();
     }
-                System.out.println(t.image);
                 {if (true) return t;}
     throw new Error("Missing return statement in function");
   }
@@ -511,7 +510,7 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
 }*/
   final public void validarNombreEsta(ArrayList< String > parametro) throws ParseException {
         Token t;
-        Token k = null;
+        Token k= null;
     t = jj_consume_token(VAR_NAME);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAR:
@@ -592,7 +591,7 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
                 }
                 else
                 {
-                        if(f.getParametros().size() == k.image.split(", ").length)
+                        if(f.getParametros()!= null && k!= null && f.getParametros().size() == k.image.split(", ").length)
                         {
                                 {if (true) throw new Error("el numero de parametros de la funcion no coincide ");}
                         }
