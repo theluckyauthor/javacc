@@ -241,10 +241,14 @@ funcsAccepted.add(new Function("if"));
   final public void eacontodosparametros(ArrayList< String > parametrosPorUsar) throws ParseException {
         Token t;
     t = ea(parametrosPorUsar);
-                String s = t.image;
+          String s = null;
+          if(t != null)
+          {
+           s = t.image;
+          }
                 boolean encontrado = true;
                 int i = 0;
-                while(i < parametrosPorUsar.size() && encontrado)
+                while(i < parametrosPorUsar.size() && encontrado && s!= null)
                 {
                         encontrado = s.contains(parametrosPorUsar.get(i));
                         i++;
@@ -372,9 +376,42 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
       break;
     case IF:
       cond(parametrosPorUsar);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case MULT:
+      case PLUS:
+      case REST:
+      case DIV:
+      case MOD:
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case MULT:
+          jj_consume_token(MULT);
+          break;
+        case DIV:
+          jj_consume_token(DIV);
+          break;
+        case REST:
+          jj_consume_token(REST);
+          break;
+        case PLUS:
+          jj_consume_token(PLUS);
+          break;
+        case MOD:
+          jj_consume_token(MOD);
+          break;
+        default:
+          jj_la1[14] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        ea(parametrosPorUsar);
+        break;
+      default:
+        jj_la1[15] = jj_gen;
+        ;
+      }
       break;
     default:
-      jj_la1[14] = jj_gen;
+      jj_la1[16] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -390,7 +427,7 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
       jj_consume_token(SPACE);
       break;
     default:
-      jj_la1[15] = jj_gen;
+      jj_la1[17] = jj_gen;
       ;
     }
     jj_consume_token(LPAR);
@@ -399,28 +436,10 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
       jj_consume_token(SPACE);
       break;
     default:
-      jj_la1[16] = jj_gen;
-      ;
-    }
-    eb(parametrosPorUsar);
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SPACE:
-      jj_consume_token(SPACE);
-      break;
-    default:
-      jj_la1[17] = jj_gen;
-      ;
-    }
-    jj_consume_token(COMMA);
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case SPACE:
-      jj_consume_token(SPACE);
-      break;
-    default:
       jj_la1[18] = jj_gen;
       ;
     }
-    ea(parametrosPorUsar);
+    eb(parametrosPorUsar);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SPACE:
       jj_consume_token(SPACE);
@@ -447,12 +466,38 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
       jj_la1[21] = jj_gen;
       ;
     }
+    jj_consume_token(COMMA);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SPACE:
+      jj_consume_token(SPACE);
+      break;
+    default:
+      jj_la1[22] = jj_gen;
+      ;
+    }
+    ea(parametrosPorUsar);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SPACE:
+      jj_consume_token(SPACE);
+      break;
+    default:
+      jj_la1[23] = jj_gen;
+      ;
+    }
     jj_consume_token(RPAR);
   }
 
   final public void eb(ArrayList< String > parametrosPorUsar) throws ParseException {
         System.out.println("entro en exp bool");
     ea(parametrosPorUsar);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SPACE:
+      jj_consume_token(SPACE);
+      break;
+    default:
+      jj_la1[24] = jj_gen;
+      ;
+    }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case G:
       jj_consume_token(G);
@@ -473,9 +518,17 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
       jj_consume_token(NE);
       break;
     default:
-      jj_la1[22] = jj_gen;
+      jj_la1[25] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
+    }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SPACE:
+      jj_consume_token(SPACE);
+      break;
+    default:
+      jj_la1[26] = jj_gen;
+      ;
     }
     ea(parametrosPorUsar);
   }
@@ -528,7 +581,7 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
             ;
             break;
           default:
-            jj_la1[23] = jj_gen;
+            jj_la1[27] = jj_gen;
             break label_4;
           }
           jj_consume_token(COMMA);
@@ -536,13 +589,13 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
         }
         break;
       default:
-        jj_la1[24] = jj_gen;
+        jj_la1[28] = jj_gen;
         ;
       }
       jj_consume_token(RPAR);
       break;
     default:
-      jj_la1[25] = jj_gen;
+      jj_la1[29] = jj_gen;
       ;
     }
                 System.out.println(t.image);
@@ -608,7 +661,7 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[26];
+  final private int[] jj_la1 = new int[30];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -616,10 +669,10 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x8000000,0x10000000,0x8,0x8,0x40,0x80000000,0x200,0x8,0x8,0x8,0x1f000,0x1f000,0x1f000,0x1f000,0xc4000400,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x7e0000,0x40,0xc4000400,0x200,};
+      jj_la1_0 = new int[] {0x8000000,0x10000000,0x8,0x8,0x40,0x80000000,0x200,0x8,0x8,0x8,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0x1f000,0xc4000400,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x8,0x7e0000,0x8,0x40,0xc4000400,0x200,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -633,7 +686,7 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 30; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -647,7 +700,7 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 30; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -657,7 +710,7 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 30; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -667,7 +720,7 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 30; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -676,7 +729,7 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 30; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -685,7 +738,7 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 30; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -741,7 +794,7 @@ Token validarSiParametroEsta(ArrayList< String > parametro):
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 26; i++) {
+    for (int i = 0; i < 30; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

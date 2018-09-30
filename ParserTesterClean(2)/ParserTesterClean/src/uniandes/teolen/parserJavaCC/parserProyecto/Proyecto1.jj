@@ -215,10 +215,14 @@ void eacontodosparametros(ArrayList< String > parametrosPorUsar):
 {
  	(t = ea(parametrosPorUsar))
  	{
-		String s = t.image;
+ 	  String s = null;
+ 	  if(t != null)
+ 	  {
+ 	   s = t.image;
+ 	  }
 		boolean encontrado = true;
 	  	int i = 0;
-		while(i < parametrosPorUsar.size() && encontrado)
+		while(i < parametrosPorUsar.size() && encontrado && s!= null)
 		{
 			encontrado = s.contains(parametrosPorUsar.get(i));
 			i++;
@@ -270,7 +274,7 @@ Token ea(ArrayList< String > parametrosPorUsar):
 	Token t = null;
 }
 {	
- 	((t = < NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea(parametrosPorUsar))? | validarNombreEsta(parametrosPorUsar) ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea(parametrosPorUsar))? | < LCOR > ea(parametrosPorUsar)< RCOR > | cond(parametrosPorUsar)))
+ 	((t = < NUMBER > ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea(parametrosPorUsar))? | validarNombreEsta(parametrosPorUsar) ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea(parametrosPorUsar))? | < LCOR > ea(parametrosPorUsar)< RCOR > | cond(parametrosPorUsar) ((<MULT >|< DIV >| < REST > | < PLUS > | < MOD >) ea(parametrosPorUsar))?))
  	{
 		return t;
  	}
@@ -290,7 +294,7 @@ void eb(ArrayList< String > parametrosPorUsar):
 	System.out.println("entro en exp bool");
 }  
 {
-	ea(parametrosPorUsar) (< G >|< GE > | < L > | < LE > | < E > | < NE > ) ea(parametrosPorUsar)
+	ea(parametrosPorUsar) (< SPACE >)? (< G >|< GE > | < L > | < LE > | < E > | < NE > ) (< SPACE >)? ea(parametrosPorUsar)
 }
 
 
